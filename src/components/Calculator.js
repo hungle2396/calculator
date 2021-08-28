@@ -1,70 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../css/calculator.css";
 
 const Calculator = () => {
-  const [firstNumber, setFirstNumber] = useState("");
-  const [secondNumber, setSecondNumber] = useState("");
-  const [switchNumber, setSwitchNumber] = useState(false);
-  const [operator, setOperator] = useState(null);
-  const [result, setResult] = useState("");
+  const [characters, setCharacters] = useState("");
+  const [result, setResult] = useState("0");
 
-  const concatNumberHandler = (e) => {
-    console.log(e);
+  const operations = ["+", "-", "*", "/"];
 
-    if (!switchNumber) {
-      setFirstNumber(firstNumber + e);
-      setResult(firstNumber);
-    } else {
-      setSecondNumber(secondNumber + e);
-      setResult(secondNumber);
+  console.log("Beginning of Calculator function");
+  console.log(`characters: ${characters}`);
+  console.log(`result: ${result}`);
+
+  const concatCharactersHandler = (e) => {
+    // The character is one of the operation
+    if (
+      (operations.includes(e) && characters === "") ||
+      (operations.includes(e) && operations.includes(characters.slice(-1)))
+    ) {
+      return;
     }
-  };
 
-  const operatorHandler = (e) => {
-    setOperator(e);
+    // The character is a number
+    setCharacters((prevCharacters) => {
+      return prevCharacters + e;
+    });
 
-    setSwitchNumber(true);
+    console.log(characters);
+    if (!operations.includes(e)) {
+      setResult(() => {
+        return eval(characters + e).toString();
+      });
+    }
   };
 
   const equalHandler = (e) => {
-    if (operator === "+") {
-      setResult(Number(firstNumber) + Number(secondNumber));
+    const last_Character = characters.slice(-1);
+
+    console.log("last Character is ", last_Character);
+
+    if (operations.includes(last_Character)) {
+      return;
     }
 
-    if (operator === "-") {
-      setResult(Number(firstNumber) - Number(secondNumber));
-    }
-
-    if (operator === "*") {
-      setResult(Number(firstNumber) * Number(secondNumber));
-    }
-
-    if (operator === "/") {
-      setResult(Number(firstNumber) / Number(secondNumber));
+    if (!operations.includes(last_Character)) {
+      setResult(eval(characters).toString());
+      setCharacters(result.toString());
     }
   };
 
   const clearHandler = (e) => {
-    setFirstNumber("");
-    setSecondNumber("");
-    setSwitchNumber(false);
-    setOperator(null);
-    setResult("");
+    setCharacters("");
+    setResult("0");
   };
-
-  // useEffect(() => {
-  //   if (firstNumber) {
-  //     setResult(firstNumber);
-  //   }
-
-  //   if (secondNumber) {
-  //     setResult(secondNumber);
-  //   }
-  // }, [firstNumber, secondNumber]);
 
   return (
     <div className="calculator">
       <div className="calculator__box--result">
+        <div className="calculator__string">{characters}</div>
         <div className="calculator__result">{result}</div>
       </div>
 
@@ -72,7 +64,7 @@ const Calculator = () => {
         <button
           value="1"
           className="calculator__btn calculator__btn--1"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           1
         </button>
@@ -82,7 +74,7 @@ const Calculator = () => {
         <button
           value="2"
           className="calculator__btn calculator__btn--2"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           2
         </button>
@@ -92,7 +84,7 @@ const Calculator = () => {
         <button
           value="3"
           className="calculator__btn calculator__btn--3"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           3
         </button>
@@ -102,7 +94,7 @@ const Calculator = () => {
         <button
           value="4"
           className="calculator__btn calculator__btn--4"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           4
         </button>
@@ -112,7 +104,7 @@ const Calculator = () => {
         <button
           value="5"
           className="calculator__btn calculator__btn--5"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           5
         </button>
@@ -122,7 +114,7 @@ const Calculator = () => {
         <button
           value="6"
           className="calculator__btn calculator__btn--6"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           6
         </button>
@@ -132,7 +124,7 @@ const Calculator = () => {
         <button
           value="7"
           className="calculator__btn calculator__btn--7"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           7
         </button>
@@ -142,7 +134,7 @@ const Calculator = () => {
         <button
           value="8"
           className="calculator__btn calculator__btn--8"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           8
         </button>
@@ -152,7 +144,7 @@ const Calculator = () => {
         <button
           value="9"
           className="calculator__btn calculator__btn--9"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           9
         </button>
@@ -162,7 +154,7 @@ const Calculator = () => {
         <button
           value="0"
           className="calculator__btn calculator__btn--0"
-          onClick={(e) => concatNumberHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           0
         </button>
@@ -182,7 +174,7 @@ const Calculator = () => {
         <button
           value="="
           className="calculator__btn calculator__btn--equal"
-          onClick={(e) => equalHandler(e.target.value)}
+          onClick={() => equalHandler()}
         >
           =
         </button>
@@ -192,7 +184,7 @@ const Calculator = () => {
         <button
           value="+"
           className="calculator__btn calculator__btn--plus"
-          onClick={(e) => operatorHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           +
         </button>
@@ -202,7 +194,7 @@ const Calculator = () => {
         <button
           value="-"
           className="calculator__btn calculator__btn--minus"
-          onClick={(e) => operatorHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           -
         </button>
@@ -212,7 +204,7 @@ const Calculator = () => {
         <button
           value="*"
           className="calculator__btn calculator__btn--multiply"
-          onClick={(e) => operatorHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           *
         </button>
@@ -222,7 +214,7 @@ const Calculator = () => {
         <button
           value="/"
           className="calculator__btn calculator__btn--divide"
-          onClick={(e) => operatorHandler(e.target.value)}
+          onClick={(e) => concatCharactersHandler(e.target.value)}
         >
           /
         </button>
